@@ -78,24 +78,52 @@ public_users.get('/isbn/:isbn', function (req, res) {
 });
 
 
-// Task 3 - Get books by Author
+// // Task 3 - Get books by Author
+// public_users.get('/author/:author', function (req, res) {
+
+//   const author = req.params.author;
+//   let result = {};
+
+//   Object.keys(books).forEach(key => {
+//     if (books[key].author === author) {
+//       result[key] = books[key];
+//     }
+//   });
+
+//   if (Object.keys(result).length > 0) {
+//     return res.status(200).send(JSON.stringify(result, null, 4));
+//   } else {
+//     return res.status(404).json({ message: "No books found for this author" });
+//   }
+// });
+
+// Task 12 - Get books by Author using Promise
 public_users.get('/author/:author', function (req, res) {
 
   const author = req.params.author;
-  let result = {};
 
-  Object.keys(books).forEach(key => {
-    if (books[key].author === author) {
-      result[key] = books[key];
+  const getBooksByAuthor = new Promise((resolve, reject) => {
+
+    let result = {};
+
+    Object.keys(books).forEach(key => {
+      if (books[key].author === author) {
+        result[key] = books[key];
+      }
+    });
+
+    if (Object.keys(result).length > 0) {
+      resolve(result);
+    } else {
+      reject("No books found for this author");
     }
   });
 
-  if (Object.keys(result).length > 0) {
-    return res.status(200).send(JSON.stringify(result, null, 4));
-  } else {
-    return res.status(404).json({ message: "No books found for this author" });
-  }
+  getBooksByAuthor
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(404).json({ message: err }));
 });
+
 
 // Task 4 - Get books by Title
 public_users.get('/title/:title', function (req, res) {
