@@ -24,10 +24,27 @@ public_users.post("/register", (req, res) => {
   return res.status(200).json({ message: "User successfully registered" });
 });
 
-// Task 1 - Get all books
+// // Task 1 - Get all books
+// public_users.get('/', function (req, res) {
+//   return res.status(200).send(JSON.stringify(books, null, 4));
+// });
+
+// Task 10 - Get all books using Promise
 public_users.get('/', function (req, res) {
-  return res.status(200).send(JSON.stringify(books, null, 4));
+
+  const getBooks = new Promise((resolve, reject) => {
+    if (books) {
+      resolve(books);
+    } else {
+      reject("Error fetching books");
+    }
+  });
+
+  getBooks
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(500).json({ message: err }));
 });
+
 
 // Task 2 - Get book by ISBN
 public_users.get('/isbn/:isbn', function (req, res) {
