@@ -46,18 +46,37 @@ public_users.get('/', function (req, res) {
 });
 
 
-// Task 2 - Get book by ISBN
+// // Task 2 - Get book by ISBN
+// public_users.get('/isbn/:isbn', function (req, res) {
+
+//   const isbn = req.params.isbn;
+//   const book = books[isbn];
+
+//   if (book) {
+//     return res.status(200).send(JSON.stringify(book, null, 4));
+//   } else {
+//     return res.status(404).json({ message: "Book not found" });
+//   }
+// });
+
+// Task 11 - Get book by ISBN using Promise
 public_users.get('/isbn/:isbn', function (req, res) {
 
   const isbn = req.params.isbn;
-  const book = books[isbn];
 
-  if (book) {
-    return res.status(200).send(JSON.stringify(book, null, 4));
-  } else {
-    return res.status(404).json({ message: "Book not found" });
-  }
+  const getBook = new Promise((resolve, reject) => {
+    if (books[isbn]) {
+      resolve(books[isbn]);
+    } else {
+      reject("Book not found");
+    }
+  });
+
+  getBook
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(404).json({ message: err }));
 });
+
 
 // Task 3 - Get books by Author
 public_users.get('/author/:author', function (req, res) {
