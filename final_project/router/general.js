@@ -125,24 +125,52 @@ public_users.get('/author/:author', function (req, res) {
 });
 
 
-// Task 4 - Get books by Title
+// // Task 4 - Get books by Title
+// public_users.get('/title/:title', function (req, res) {
+
+//   const title = req.params.title;
+//   let result = {};
+
+//   Object.keys(books).forEach(key => {
+//     if (books[key].title === title) {
+//       result[key] = books[key];
+//     }
+//   });
+
+//   if (Object.keys(result).length > 0) {
+//     return res.status(200).send(JSON.stringify(result, null, 4));
+//   } else {
+//     return res.status(404).json({ message: "No books found with this title" });
+//   }
+// });
+
+// Task 13 - Get books by Title using Promise
 public_users.get('/title/:title', function (req, res) {
 
   const title = req.params.title;
-  let result = {};
 
-  Object.keys(books).forEach(key => {
-    if (books[key].title === title) {
-      result[key] = books[key];
+  const getBooksByTitle = new Promise((resolve, reject) => {
+
+    let result = {};
+
+    Object.keys(books).forEach(key => {
+      if (books[key].title === title) {
+        result[key] = books[key];
+      }
+    });
+
+    if (Object.keys(result).length > 0) {
+      resolve(result);
+    } else {
+      reject("No books found with this title");
     }
   });
 
-  if (Object.keys(result).length > 0) {
-    return res.status(200).send(JSON.stringify(result, null, 4));
-  } else {
-    return res.status(404).json({ message: "No books found with this title" });
-  }
+  getBooksByTitle
+    .then(data => res.status(200).json(data))
+    .catch(err => res.status(404).json({ message: err }));
 });
+
 
 // Task 5 - Get book reviews
 public_users.get('/review/:isbn', function (req, res) {
